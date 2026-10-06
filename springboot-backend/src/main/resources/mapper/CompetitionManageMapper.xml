@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.mapper.CompetitionManageMapper">
+
+    <!-- 竞赛结果映射 -->
+    <resultMap id="CompetitionResultMap" type="com.example.entity.Competition">
+        <id property="competitionId" column="competition_id"/>
+        <result property="competitionName" column="competition_name"/>
+        <result property="awardRank" column="award_rank"/>
+        <result property="competitionType" column="competition_type"/>
+        <result property="minTeamSize" column="min_team_size"/>
+        <result property="maxTeamSize" column="max_team_size"/>
+        <result property="teamOpenTime" column="team_open_time"/>
+        <result property="teamCloseTime" column="team_close_time"/>
+        <result property="teamEnabled" column="team_enabled"/>
+    </resultMap>
+
+    <!-- 查询竞赛总数 -->
+    <select id="countCompetitions" resultType="int">
+        SELECT COUNT(*) FROM competition
+        <where>
+            <if test="competitionName != null and competitionName != ''">
+                AND competition_name LIKE CONCAT('%', #{competitionName}, '%')
+            </if>
+            <if test="awardRank != null and awardRank != ''">
+                AND award_rank = #{awardRank}
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据等次查询竞赛数 -->
+    <select id="countByAwardRank" resultType="int">
+        SELECT COUNT(*) FROM competition
+        WHERE award_rank = #{awardRank}
+    </select>
+
+    <!-- 分页查询竞赛列表 -->
+    <select id="selectCompetitionList" resultMap="CompetitionResultMap">
+        SELECT 
+            competition_id,
+            competition_name,
+            award_rank, competition_type, min_team_size, max_team_size, team_open_time, team_close_time, team_enabled
+        FROM competition
+        <where>
+            <if test="competitionName != null and competitionName != ''">
+                AND competition_name LIKE CONCAT('%', #{competitionName}, '%')
+            </if>
+            <if test="awardRank != null and awardRank != ''">
+                AND award_rank = #{awardRank}
+            </if>
+        </where>
+        ORDER BY 
+            CASE award_rank
+                WHEN 'A' THEN 1
+                WHEN 'B' THEN 2
+                WHEN 'C' THEN 3
+                WHEN 'D' THEN 4
+                ELSE 5
+            END,
+            competition_id ASC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <!-- 根据ID查询竞赛 -->
+    <select id="selectCompetitionById" resultMap="CompetitionResultMap">
+        SELECT 
+            competition_id,
+            competition_name,
+            award_rank, competition_type, min_team_size, max_team_size, team_open_time, team_close_time, team_enabled
+        FROM competition
+        WHERE competition_id = #{competitionId}
+    </select>
+
+    <!-- 插入竞赛 -->
+    <insert id="insertCompetition" parameterType="com.example.entity.Competition"
+            useGeneratedKeys="true" keyProperty="competitionId">
+        INSERT INTO competition (
+            competition_name, award_rank, competition_type, min_team_size, max_team_size,
+            team_open_time, team_close_time, team_enabled
+        ) VALUES (
+            #{competitionName}, #{awardRank}, #{competitionType}, #{minTeamSize}, #{maxTeamSize},
+            #{teamOpenTime}, #{teamCloseTime}, #{teamEnabled}
+        )
+    </insert>
+
+    <!-- 更新竞赛 -->
+    <update id="updateCompetition" parameterType="com.example.entity.Competition">
+        UPDATE competition
+        SET competition_name = #{competitionName},
+            award_rank = #{awardRank},
+            competition_type = #{competitionType},
+            min_team_size = #{minTeamSize},
+            max_team_size = #{maxTeamSize},
+            team_open_time = #{teamOpenTime},
+            team_close_time = #{teamCloseTime},
+            team_enabled = #{teamEnabled}
+        WHERE competition_id = #{competitionId}
+    </update>
+
+    <!-- 删除竞赛 -->
+    <delete id="deleteCompetition">
+        DELETE FROM competition
+        WHERE competition_id = #{competitionId}
+    </delete>
+
+    <!-- 批量删除竞赛 -->
+    <delete id="batchDeleteCompetitions">
+        DELETE FROM competition
+        WHERE competition_id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 查询所有竞赛（用于导出） -->
+    <select id="selectAllCompetitions" resultMap="CompetitionResultMap">
+        SELECT 
+            competition_id,
+            competition_name,
+            award_rank, competition_type, min_team_size, max_team_size, team_open_time, team_close_time, team_enabled
+        FROM competition
+        <where>
+            <if test="competitionName != null and competitionName != ''">
+                AND competition_name LIKE CONCAT('%', #{competitionName}, '%')
+            </if>
+        </where>
+        ORDER BY 
+            CASE award_rank
+                WHEN 'A' THEN 1
+                WHEN 'B' THEN 2
+                WHEN 'C' THEN 3
+                WHEN 'D' THEN 4
+                ELSE 5
+            END,
+            competition_id ASC
+    </select>
+
+</mapper>

@@ -1,0 +1,55 @@
+# Spring Boot 应用核心配置文件
+# 用于配置服务器、数据库、MyBatis 等核心组件参数
+server:
+  port: 9998  # 配置应用启动后占用的端口号，前端请求需通过该端口访问后端接口
+
+# 数据库配置和文件上传配置
+spring:
+  datasource:
+    # MySQL 驱动类全路径
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 数据库登录用户名
+    username: ${SAIMS_DB_USERNAME}
+    # 密码
+    password: ${SAIMS_DB_PASSWORD}
+    # 数据库连接 URL：指定数据库地址、端口、目标库名及连接参数
+    url: jdbc:mysql://localhost:3306/awardsystem?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=GMT%2b8&allowPublicKeyRetrieval=true
+  servlet:
+    multipart:
+      # 单个文件最大大小
+      max-file-size: 10MB
+      # 整个请求最大大小
+      max-request-size: 50MB
+
+# 配置mybatis实体和xml映射
+mybatis:
+  # 映射xml
+  mapper-locations: classpath:mapper/*.xml  #classpath表示resources的目录
+  configuration:
+    # 配置日志
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+
+# 文件上传配置
+file:
+  upload:
+    # 文件上传根目录
+    # 使用 ${user.dir} 自动获取项目运行目录，适配任何电脑
+    # 文件会保存到：项目目录/uploads/applications/
+    path: ${user.dir}/uploads/applications/
+
+auth:
+  jwt-secret: ${SAIMS_JWT_SECRET}
+  token-hours: 8
+
+# OCR智能预检服务配置
+# provider: baidu-百度智能云文字识别；none-未接入（OCR自动转人工审核）
+# endpoint: 默认「通用文字识别（标准版）」general_basic——个人实名认证免费 1000 次/月，超量单价最低；
+#           如需更强识别可改为高精度版 https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic
+#           （高精度版需在控制台另行领取免费额度，超出后单价更高）
+ocr:
+  provider: ${SAIMS_OCR_PROVIDER:baidu}
+  baidu:
+    api-key: ${SAIMS_OCR_API_KEY:}
+    secret-key: ${SAIMS_OCR_SECRET_KEY:}
+    endpoint: ${SAIMS_OCR_ENDPOINT:https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic}

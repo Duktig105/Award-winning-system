@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Maven 项目的核心配置文件，定义项目基本信息、依赖管理和构建配置 -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <!-- 指定 POM 模型版本，固定为 4.0.0 -->
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- 父项目配置，继承 Spring Boot Starter Parent 的默认配置 -->
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.5.6</version> <!-- Spring Boot 版本号 -->
+    <relativePath/> <!-- 从 Maven 仓库查找父项目，而非本地路径 -->
+  </parent>
+
+  <!-- 当前项目基本信息 -->
+  <groupId>com.example</groupId> <!-- 项目组织唯一标识 -->
+  <artifactId>springboot-backend</artifactId> <!-- 项目唯一标识（通常为模块名） -->
+  <version>0.0.1-SNAPSHOT</version> <!-- 项目版本号，SNAPSHOT 表示快照版本（开发中） -->
+  <name>springboot-backend</name> <!-- 项目名称 -->
+  <description>Student Award Information Management System Backend</description> <!-- 项目描述 -->
+
+  <!-- 项目属性配置 -->
+  <properties>
+    <java.version>21</java.version> <!-- 指定项目使用的 Java 版本（原为25，本机JDK21已调整） -->
+  </properties>
+
+  <!-- 项目依赖管理 -->
+  <dependencies>
+
+    <!-- Spring Boot Web Starter：包含 Spring MVC、Tomcat 等 Web 开发必需依赖 -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <!-- MySQL 数据库驱动：运行时依赖，用于连接 MySQL 数据库 -->
+    <dependency>
+      <groupId>com.mysql</groupId>
+      <artifactId>mysql-connector-j</artifactId>
+      <scope>runtime</scope> <!-- 仅在运行时生效，编译时不依赖 -->
+    </dependency>
+
+    <!-- MyBatis 整合 Spring Boot 的 Starter：简化 MyBatis 配置 -->
+    <dependency>
+      <groupId>org.mybatis.spring.boot</groupId>
+      <artifactId>mybatis-spring-boot-starter</artifactId>
+      <version>3.0.5</version> <!-- MyBatis Starter 版本号 -->
+    </dependency>
+
+    <!-- PageHelper 分页插件：MyBatis 的分页工具，简化分页查询 -->
+    <dependency>
+      <groupId>com.github.pagehelper</groupId>
+      <artifactId>pagehelper-spring-boot-starter</artifactId>
+      <version>1.4.7</version> <!-- PageHelper 版本号 -->
+      <!-- 排除内置的 MyBatis 依赖，避免与项目中其他版本冲突 -->
+      <exclusions>
+        <exclusion>
+          <groupId>org.mybatis</groupId>
+          <artifactId>mybatis</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <!-- Hutool 工具类库：包含大量 Java 工具类，简化开发 -->
+    <dependency>
+      <groupId>cn.hutool</groupId>
+      <artifactId>hutool-all</artifactId>
+      <version>5.8.25</version> <!-- Hutool 版本号 -->
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-crypto</artifactId>
+      <version>6.5.5</version>
+    </dependency>
+
+    <!-- Apache POI：处理 Excel 文件的工具库，用于数据导入导出 -->
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml</artifactId>
+      <version>5.2.3</version> <!-- POI 版本号，支持 .xlsx 格式 -->
+    </dependency>
+
+  </dependencies>
+
+  <!-- 项目构建配置 -->
+  <build>
+    <plugins>
+      <!-- Spring Boot Maven 插件：提供打包、运行等功能 -->
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <!-- 插件版本继承自父项目，无需单独指定 -->
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.ApplicationMapper">
+
+    <!-- ==================== ResultMap 定义 ==================== -->
+    
+    <!-- 申请结果映射 -->
+    <resultMap id="AwardApplicationResultMap" type="com.example.entity.AwardApplication">
+        <id property="applicationId" column="application_id"/>
+        <result property="competitionId" column="competition_id"/>
+        <result property="teamId" column="team_id"/>
+        <result property="studentId" column="student_id"/>
+        <result property="projectName" column="project_name"/>
+        <result property="awardQuantity" column="award_quantity"/>
+        <result property="awardPersonCount" column="award_person_count"/>
+        <result property="contact" column="contact"/>
+        <result property="competitionLevel" column="competition_level"/>
+        <result property="awardRank" column="award_rank"/>
+        <result property="competitionType" column="competition_type"/>
+        <result property="minTeamSize" column="min_team_size"/>
+        <result property="maxTeamSize" column="max_team_size"/>
+        <result property="teamOpenTime" column="team_open_time"/>
+        <result property="teamCloseTime" column="team_close_time"/>
+        <result property="teamEnabled" column="team_enabled"/>
+        <result property="awardLevel" column="award_level"/>
+        <result property="awardTime" column="award_time"/>
+        <result property="applicationStatus" column="application_status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="teamName" column="team_name"/>
+        <result property="applicationNumber" column="application_number"/>
+    </resultMap>
+
+    <!-- 竞赛结果映射 -->
+    <resultMap id="CompetitionResultMap" type="com.example.entity.Competition">
+        <id property="competitionId" column="competition_id"/>
+        <result property="competitionName" column="competition_name"/>
+        <result property="awardRank" column="award_rank"/>
+    </resultMap>
+
+    <!-- 文件结果映射 -->
+    <resultMap id="ApplicationFileResultMap" type="com.example.entity.ApplicationFile">
+        <id property="fileId" column="file_id"/>
+        <result property="applicationId" column="application_id"/>
+        <result property="fileName" column="file_name"/>
+        <result property="filePath" column="file_path"/>
+        <result property="fileType" column="file_type"/>
+        <result property="fileSize" column="file_size"/>
+        <result property="uploadTime" column="upload_time"/>
+    </resultMap>
+
+    <!-- 团队结果映射 -->
+    <resultMap id="TeamResultMap" type="com.example.entity.Team">
+        <id property="teamId" column="team_id"/>
+        <result property="name" column="name"/>
+        <result property="leaderId" column="leader_id"/>
+        <result property="competitionId" column="competition_id"/>
+        <result property="hasSort" column="has_sort"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <!-- 团队成员结果映射 -->
+    <resultMap id="TeamMemberResultMap" type="com.example.entity.TeamMember">
+        <id property="teamMemberId" column="team_member_id"/>
+        <result property="teamId" column="team_id"/>
+        <result property="studentId" column="student_id"/>
+        <result property="isLeader" column="is_leader"/>
+        <result property="sortOrder" column="sort_order"/>
+        <result property="externalName" column="external_name"/>
+        <result property="externalNumber" column="external_number"/>
+        <result property="externalSchool" column="external_school"/>
+    </resultMap>
+
+    <!-- 指导老师结果映射 -->
+    <resultMap id="ApplicationTeacherResultMap" type="com.example.entity.ApplicationTeacher">
+        <id property="id" column="id"/>
+        <result property="applicationId" column="application_id"/>
+        <result property="teacherName" column="teacher_name"/>
+        <result property="teacherDepartment" column="teacher_department"/>
+        <result property="teacherNo" column="teacher_no"/>
+    </resultMap>
+
+    <!-- ==================== 申请相关操作 ==================== -->
+
+    <!-- 插入申请记录 -->
+    <insert id="insert" parameterType="com.example.entity.AwardApplication" 
+            useGeneratedKeys="true" keyProperty="applicationId">
+        INSERT INTO award_application (
+            competition_id, team_id, student_id, project_name,
+            award_quantity, award_person_count, contact, competition_level,
+            award_rank, award_level, award_time, application_status,
+            create_time, application_number
+        ) VALUES (
+            #{competitionId}, #{teamId}, #{studentId}, #{projectName},
+            #{awardQuantity}, #{awardPersonCount}, #{contact}, #{competitionLevel},
+            #{awardRank}, #{awardLevel}, #{awardTime}, #{applicationStatus},
+            #{createTime}, #{applicationNumber}
+        )
+    </insert>
+
+    <!-- 根据申请ID查询申请 -->
+    <select id="selectById" resultMap="AwardApplicationResultMap">
+        SELECT * FROM award_application
+        WHERE application_id = #{applicationId}
+    </select>
+
+    <!-- 根据学生ID查询申请列表 -->
+    <select id="selectByStudentId" resultMap="AwardApplicationResultMap">
+        SELECT * FROM award_application
+        WHERE student_id = #{studentId}
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 查询所有申请 -->
+    <select id="selectAll" resultMap="AwardApplicationResultMap">
+        SELECT * FROM award_application
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 更新申请状态 -->
+    <update id="updateStatus">
+        UPDATE award_application
+        SET application_status = #{status}
+        WHERE application_id = #{applicationId}
+    </update>
+    
+    <!-- 删除申请 -->
+    <delete id="deleteById">
+        DELETE FROM award_application
+        WHERE application_id = #{applicationId}
+    </delete>
+
+    <!-- 更新申请的团队ID -->
+    <update id="updateApplicationTeamId">
+        UPDATE award_application
+        SET team_id = #{teamId}
+        WHERE application_id = #{applicationId}
+    </update>
+
+    <!-- ==================== 竞赛相关操作 ==================== -->
+
+    <!-- 根据关键词搜索竞赛 -->
+    <select id="searchCompetitionByName" resultMap="CompetitionResultMap">
+        SELECT competition_id, competition_name, award_rank, competition_type, min_team_size, max_team_size, team_open_time, team_close_time, team_enabled
+        FROM competition
+        WHERE competition_name LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY competition_name
+    </select>
+
+    <!-- 查询所有竞赛 -->
+    <select id="selectAllCompetitions" resultMap="CompetitionResultMap">
+        SELECT competition_id, competition_name, award_rank, competition_type, min_team_size, max_team_size, team_open_time, team_close_time, team_enabled
+        FROM competition
+        ORDER BY competition_name
+    </select>
+
+    <!-- 插入竞赛 -->
+    <insert id="insertCompetition" parameterType="com.example.entity.Competition"
+            useGeneratedKeys="true" keyProperty="competitionId">
+        INSERT INTO competition (competition_name, award_rank)
+        VALUES (#{competitionName}, #{awardRank})
+    </insert>
+
+    <!-- 根据竞赛ID查询竞赛 -->
+    <select id="selectCompetitionById" resultMap="CompetitionResultMap">
+        SELECT competition_id, competition_name, award_rank, competition_type, min_team_size, max_team_size, team_open_time, team_close_time, team_enabled
+        FROM competition
+        WHERE competition_id = #{competitionId}
+    </select>
+
+    <!-- ==================== 文件相关操作 ==================== -->
+
+    <!-- 插入文件记录 -->
+    <insert id="insertFile" parameterType="com.example.entity.ApplicationFile"
+            useGeneratedKeys="true" keyProperty="fileId">
+        INSERT INTO application_file (
+            application_id, file_name, file_path, file_type, file_size, upload_time
+        ) VALUES (
+            #{applicationId}, #{fileName}, #{filePath}, #{fileType}, #{fileSize}, #{uploadTime}
+        )
+    </insert>
+
+    <!-- 根据申请ID查询文件列表 -->
+    <select id="selectFilesByApplicationId" resultType="map">
+        SELECT 
+            file_id as fileId,
+            application_id as applicationId,
+            file_name as fileName,
+            file_path as filePath,
+            file_type as fileType,
+            file_size as fileSize,
+            upload_time as uploadTime
+        FROM application_file
+        WHERE application_id = #{applicationId}
+        ORDER BY upload_time
+    </select>
+
+    <!-- 删除文件记录 -->
+    <delete id="deleteFile">
+        DELETE FROM application_file
+        WHERE file_id = #{fileId}
+    </delete>
+
+    <!-- ==================== 团队相关操作 ==================== -->
+
+    <!-- 插入团队记录 -->
+    <insert id="insertTeam" parameterType="com.example.entity.Team"
+            useGeneratedKeys="true" keyProperty="teamId">
+        INSERT INTO team (name, leader_id, competition_id, has_sort, create_time)
+        VALUES (#{name}, #{leaderId}, #{competitionId}, #{hasSort}, #{createTime})
+    </insert>
+
+    <!-- 根据团队ID查询团队 -->
+    <select id="selectTeamById" resultMap="TeamResultMap">
+        SELECT * FROM team
+        WHERE team_id = #{teamId}
+    </select>
+
+    <!-- 更新团队信息 -->
+    <update id="updateTeam" parameterType="com.example.entity.Team">
+        UPDATE team
+        SET name = #{name},
+            leader_id = #{leaderId},
+            has_sort = #{hasSort}
+        WHERE team_id = #{teamId}
+    </update>
+
+    <!-- ==================== 团队成员相关操作 ==================== -->
+
+    <!-- 插入团队成员记录 -->
+    <insert id="insertTeamMember" parameterType="com.example.entity.TeamMember"
+            useGeneratedKeys="true" keyProperty="teamMemberId">
+        INSERT INTO team_member (
+            team_id, student_id, is_leader, sort_order,
+            external_name, external_number, external_school
+        ) VALUES (
+            #{teamId}, #{studentId}, #{isLeader}, #{sortOrder},
+            #{externalName}, #{externalNumber}, #{externalSchool}
+        )
+    </insert>
+
+    <!-- 根据团队ID查询团队成员列表 -->
+    <select id="selectTeamMembersByTeamId" resultType="map">
+        SELECT 
+            tm.team_member_id as teamMemberId,
+            tm.team_id as teamId,
+            tm.external_name as externalName,
+            tm.external_school as externalSchool,
+            tm.external_number as externalNumber,
+            tm.is_leader as isLeader,
+            tm.sort_order as sortOrder,
+            s.student_number as studentNumber,
+            s.student_name as studentName,
+            s.college as college
+        FROM team_member tm
+        LEFT JOIN student s ON tm.student_id = s.student_id
+        WHERE tm.team_id = #{teamId}
+        ORDER BY tm.sort_order
+    </select>
+
+    <!-- 根据学号查询学生信息 -->
+    <select id="selectStudentByNumber" resultType="com.example.entity.Student">
+        SELECT 
+            student_id as studentId,
+            student_number as studentNumber,
+            student_name as studentName,
+            grade,
+            major,
+            class_name as className,
+            college
+        FROM student
+        WHERE student_number = #{studentNumber}
+        LIMIT 1
+    </select>
+
+    <!-- 删除团队成员 -->
+    <delete id="deleteTeamMember">
+        DELETE FROM team_member
+        WHERE team_member_id = #{teamMemberId}
+    </delete>
+
+    <!-- ==================== 指导老师相关操作 ==================== -->
+
+    <!-- 插入申请-指导老师关联记录 -->
+    <insert id="insertApplicationTeacher" parameterType="com.example.entity.ApplicationTeacher"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO application_teacher (
+            application_id, teacher_name, teacher_department, teacher_no
+        ) VALUES (
+            #{applicationId}, #{teacherName}, #{teacherDepartment}, #{teacherNo}
+        )
+    </insert>
+
+    <!-- 根据申请ID查询指导老师列表 -->
+    <select id="selectTeachersByApplicationId" resultType="map">
+        SELECT 
+            id,
+            application_id as applicationId,
+            teacher_name as teacherName,
+            teacher_department as teacherDepartment,
+            teacher_no as teacherNo
+        FROM application_teacher
+        WHERE application_id = #{applicationId}
+        ORDER BY id
+    </select>
+
+    <!-- 删除指导老师记录 -->
+    <delete id="deleteApplicationTeacher">
+        DELETE FROM application_teacher
+        WHERE id = #{id}
+    </delete>
+
+    <!-- ==================== 审核相关查询 ==================== -->
+
+    <!-- 统计指定状态的申请数量 -->
+    <select id="countApplicationsByStatus" resultType="int">
+        SELECT COUNT(*)
+        FROM award_application
+        <where>
+            <if test="status != null and status != ''">
+                AND application_status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <!-- 统计符合条件的申请数量（用于审核列表） -->
+    <select id="countApplicationsForReview" resultType="int">
+        SELECT COUNT(*)
+        FROM award_application aa
+        LEFT JOIN student s ON aa.student_id = s.student_id
+        LEFT JOIN competition c ON aa.competition_id = c.competition_id
+        <where>
+            <if test="status != null and status != ''">
+                AND aa.application_status = #{status}
+            </if>
+            <if test="competitionName != null and competitionName != ''">
+                AND c.competition_name LIKE CONCAT('%', #{competitionName}, '%')
+            </if>
+            <if test="studentNumber != null and studentNumber != ''">
+                AND s.student_number = #{studentNumber}
+            </if>
+        </where>
+    </select>
+
+    <!-- 查询申请列表（用于审核，包含学生和竞赛信息） -->
+    <select id="selectApplicationsForReview" resultType="map">
+        SELECT 
+            aa.application_id as applicationId,
+            aa.application_number as applicationNumber,
+            aa.project_name as projectName,
+            aa.competition_level as competitionLevel,
+            aa.award_rank as awardRank,
+            aa.award_level as awardLevel,
+            aa.award_time as awardTime,
+            aa.application_status as applicationStatus,
+            aa.create_time as createTime,
+            s.student_number as studentNumber,
+            s.student_name as studentName,
+            c.competition_name as competitionName,
+            ar.risk_level as riskLevel,
+            ar.need_manual_review as needManualReview,
+            ar.manual_mark as manualMark
+        FROM award_application aa
+        LEFT JOIN student s ON aa.student_id = s.student_id
+        LEFT JOIN competition c ON aa.competition_id = c.competition_id
+        LEFT JOIN application_risk ar ON aa.application_id = ar.application_id
+        <where>
+            <if test="status != null and status != ''">
+                AND aa.application_status = #{status}
+            </if>
+            <if test="competitionName != null and competitionName != ''">
+                AND c.competition_name LIKE CONCAT('%', #{competitionName}, '%')
+            </if>
+            <if test="studentNumber != null and studentNumber != ''">
+                AND s.student_number = #{studentNumber}
+            </if>
+        </where>
+        ORDER BY 
+            CASE aa.application_status
+                WHEN 'pending' THEN 1
+                WHEN 'returned' THEN 2
+                WHEN 'approved' THEN 3
+                WHEN 'rejected' THEN 4
+                ELSE 5
+            END,
+            aa.create_time DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <!-- 更新申请状态 -->
+    <update id="updateApplicationStatus">
+        UPDATE award_application
+        SET application_status = #{status}
+        WHERE application_id = #{applicationId}
+    </update>
+
+    <!-- ==================== 统计分析相关查询 ==================== -->
+
+    <!-- 按获奖等次统计已通过申请数量 -->
+    <select id="countApprovedByAwardRank" resultType="map">
+        SELECT aa.award_rank AS `rank`, COUNT(*) AS `count`
+        FROM award_application aa
+        WHERE aa.application_status = 'approved'
+          AND aa.award_rank IS NOT NULL AND aa.award_rank != ''
+        GROUP BY aa.award_rank
+        ORDER BY aa.award_rank
+    </select>
+
+    <!-- 按竞赛级别统计已通过申请数量 -->
+    <select id="countApprovedByCompetitionLevel" resultType="map">
+        SELECT aa.competition_level AS `level`, COUNT(*) AS `count`
+        FROM award_application aa
+        WHERE aa.application_status = 'approved'
+          AND aa.competition_level IS NOT NULL AND aa.competition_level != ''
+        GROUP BY aa.competition_level
+        ORDER BY `count` DESC
+    </select>
+
+    <!-- 按年级统计已通过申请数量 -->
+    <select id="countApprovedByGrade" resultType="map">
+        SELECT s.grade AS `grade`, COUNT(DISTINCT aa.application_id) AS `count`
+        FROM award_application aa
+        LEFT JOIN student s ON aa.student_id = s.student_id
+        WHERE aa.application_status = 'approved'
+          AND s.grade IS NOT NULL AND s.grade != ''
+        GROUP BY s.grade
+        ORDER BY s.grade
+    </select>
+
+    <!-- Top10 热门竞赛 -->
+    <select id="selectTop10Competitions" resultType="map">
+        SELECT c.competition_name AS `competitionName`, COUNT(aa.application_id) AS `count`
+        FROM award_application aa
+        LEFT JOIN competition c ON aa.competition_id = c.competition_id
+        WHERE c.competition_name IS NOT NULL
+        GROUP BY c.competition_id, c.competition_name
+        ORDER BY `count` DESC
+        LIMIT 10
+    </select>
+
+    <!-- 近12个月每月申请趋势 -->
+    <select id="selectMonthlyTrend" resultType="map">
+        SELECT
+            DATE_FORMAT(create_time, '%Y-%m') AS `month`,
+            COUNT(*) AS `totalCount`,
+            SUM(CASE WHEN application_status = 'approved' THEN 1 ELSE 0 END) AS `approvedCount`
+        FROM award_application
+        WHERE create_time >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
+        GROUP BY DATE_FORMAT(create_time, '%Y-%m')
+        ORDER BY `month` ASC
+    </select>
+
+    <!-- 按所有状态统计申请数量 -->
+    <select id="countByAllStatus" resultType="map">
+        SELECT application_status AS `status`, COUNT(*) AS `count`
+        FROM award_application
+        GROUP BY application_status
+    </select>
+
+</mapper>

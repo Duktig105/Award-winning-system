@@ -1,0 +1,53 @@
+# ===================== IDE =====================
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# ===================== 构建产物 =====================
+**/target/
+**/dist/
+**/node_modules/
+**/build/
+pkg/
+rebuild_pkg/
+rebuild_lib/
+.temp/
+
+# ===================== 日志 =====================
+*.log
+logs/
+
+# ===================== 本机密钥与启动脚本 =====================
+# 以下文件含数据库密码 / JWT 密钥 / OCR 密钥，仅保留在本机，切勿提交
+start_backend.ps1
+local-secrets.ps1
+.env
+.env.*
+*.env
+
+# ===================== 运行时上传的学生材料（含个人隐私） =====================
+uploads/
+springboot-backend/uploads/
+
+# ===================== 临时 / 废弃文件 =====================
+temp_admin.txt
+temp_admin_review.txt
+*.tmp
+verify_apis.ps1
+
+# ===================== 历史迁移脚本（含本团队真实学号白名单，仅本地保留） ======================
+sql/setup_roles_and_users.sql
+sql/rules_adjust_mysql8.sql
+sql/skill_node_manual_unlock.sql
+
+# ===================== 过时数据库备份（仅 9 表旧版且含真实学生数据，禁止公开） =====================
+award_system_backup.sql
+award_system_clean_backup.sql
+award_system_clean_v2.sql
+sql/awardsystem.sql
+
+# ===================== OS =====================
+.DS_Store
+Thumbs.db

@@ -1,0 +1,285 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+:root {
+  --primary-color: #007bff;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+  --info-color: #17a2b8;
+}
+
+.el-button--primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.el-button--primary:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+/* 页面管理容器通用样式 */
+.page-management-container {
+  padding: 15px;
+  background-color: #f5f7fa;
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* 表格容器：横向滚动 + 白色背景 */
+.table-container {
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+}
+
+/* 搜索/操作卡片样式统一 */
+.search-card,
+.operation-card {
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  margin-bottom: 16px;
+  padding: 16px;
+}
+
+/* 分页容器样式 */
+.pagination-container {
+  margin-top: 10px;
+}
+
+/* 统计信息卡片 */
+.statistics-card {
+  margin-bottom: 10px;
+  padding: 10px 15px;
+  background: linear-gradient(135deg, #555d9d 0%, #6c7ae0 100%);
+  border-radius: 8px;
+  color: white;
+}
+
+.statistics-card .statistics-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.statistics-card .statistics-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.statistics-card .statistics-icon {
+  font-size: 24px;
+}
+
+.statistics-card .statistics-label {
+  font-size: 18px;
+  opacity: 0.9;
+}
+
+.statistics-card .statistics-value {
+  font-size: 36px;
+  font-weight: bold;
+}
+
+.statistics-card .statistics-info {
+  text-align: right;
+}
+
+.statistics-card .statistics-detail {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* 操作按钮行布局 */
+.operation-buttons-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex-wrap: nowrap;
+}
+
+.operation-buttons-row .el-button {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+}
+
+/* 表格操作按钮颜色 */
+.operation-buttons-row .el-button--primary {
+  background-color: #28a745;
+  border-color: #28a745;
+  color: white;
+}
+
+.operation-buttons-row .el-button--primary:hover {
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+
+.operation-buttons-row .el-button--danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: white;
+}
+
+.operation-buttons-row .el-button--danger:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+
+/* ============================================================
+   全局 ElMessageBox / ElDialog 毛玻璃主题美化
+   ============================================================ */
+
+/* 遮罩层 */
+.el-overlay {
+  background-color: rgba(0, 0, 0, 0.25) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* 弹窗主容器 - 纯白卡片 */
+.el-message-box {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+  border-radius: 20px !important;
+  box-shadow:
+    0 20px 60px -12px rgba(0, 0, 0, 0.12),
+    0 8px 24px -8px rgba(0, 0, 0, 0.06) !important;
+  padding: 0 !important;
+  overflow: hidden;
+  min-width: 340px;
+}
+
+/* 标题栏 */
+.el-message-box__header {
+  padding: 20px 24px 0 24px !important;
+  background: transparent !important;
+}
+
+.el-message-box__title {
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  color: #1e293b !important;
+  letter-spacing: 0.3px;
+}
+
+/* 关闭按钮 */
+.el-message-box__headerbtn {
+  top: 16px !important;
+  right: 20px !important;
+}
+
+.el-message-box__headerbtn .el-message-box__close {
+  color: #94a3b8 !important;
+  font-size: 18px !important;
+  transition: all 0.2s ease !important;
+}
+
+.el-message-box__headerbtn:hover .el-message-box__close {
+  color: #6366f1 !important;
+  transform: rotate(90deg);
+}
+
+/* 内容区域 */
+.el-message-box__content {
+  padding: 16px 24px 20px 24px !important;
+}
+
+/* 状态图标 */
+.el-message-box__status {
+  font-size: 22px !important;
+}
+
+/* warning 图标 - 改为紫色渐变风 */
+.el-message-box__status.el-icon {
+  background: linear-gradient(135deg, #f59e0b, #f97316);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 6px rgba(245, 158, 11, 0.3));
+}
+
+/* 正文文字 */
+.el-message-box__message p {
+  font-size: 15px !important;
+  color: #475569 !important;
+  line-height: 1.7 !important;
+  font-weight: 500;
+}
+
+/* 底部按钮区域 */
+.el-message-box__btns {
+  padding: 0 24px 20px 24px !important;
+  gap: 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* 取消按钮 */
+.el-message-box__btns .el-button:not(.el-button--primary) {
+  background: rgba(248, 250, 252, 0.8) !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  color: #64748b !important;
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  padding: 8px 20px !important;
+  transition: all 0.25s ease !important;
+  backdrop-filter: blur(4px);
+}
+
+.el-message-box__btns .el-button:not(.el-button--primary):hover {
+  background: #ffffff !important;
+  color: #6366f1 !important;
+  border-color: #c7d2fe !important;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.08) !important;
+}
+
+/* 确定按钮 - 紫色渐变主题 */
+.el-message-box__btns .el-button--primary {
+  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%) !important;
+  border: none !important;
+  border-radius: 10px !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  padding: 8px 24px !important;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.28) !important;
+  transition: all 0.25s ease !important;
+}
+
+.el-message-box__btns .el-button--primary:hover {
+  background: linear-gradient(135deg, #9d72ff 0%, #7577f5 100%) !important;
+  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.38) !important;
+  transform: translateY(-1px);
+}
+
+.el-message-box__btns .el-button--primary:active {
+  transform: translateY(0px);
+}
+
+/* 分割线（MessageBox 内部横线） */
+.el-message-box__header::after {
+  content: '';
+  display: block;
+  margin-top: 16px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(99, 102, 241, 0.15), transparent);
+}

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.mapper.StudentMapper">
+
+    <!-- 学生结果映射 -->
+    <resultMap id="StudentResultMap" type="com.example.entity.Student">
+        <id property="studentId" column="student_id"/>
+        <result property="studentNumber" column="student_number"/>
+        <result property="studentName" column="student_name"/>
+        <result property="grade" column="grade"/>
+        <result property="major" column="major"/>
+        <result property="className" column="class_name"/>
+        <result property="college" column="college"/>
+    </resultMap>
+
+    <!-- 查询学生总数 -->
+    <select id="countStudents" resultType="int">
+        SELECT COUNT(*) FROM student
+        <where>
+            <if test="studentNumber != null and studentNumber != ''">
+                AND (student_number LIKE CONCAT('%', #{studentNumber}, '%') 
+                     OR student_name LIKE CONCAT('%', #{studentNumber}, '%'))
+            </if>
+            <if test="grade != null and grade != ''">
+                AND grade = #{grade}
+            </if>
+            <if test="className != null and className != ''">
+                AND class_name LIKE CONCAT('%', #{className}, '%')
+            </if>
+        </where>
+    </select>
+
+    <!-- 查询所有班级 -->
+    <select id="selectDistinctClasses" resultType="java.lang.String">
+        SELECT DISTINCT class_name 
+        FROM student 
+        WHERE class_name IS NOT NULL AND class_name != ''
+        ORDER BY class_name ASC
+    </select>
+
+    <!-- 查询各年级学生人数统计 -->
+    <select id="countStudentsByGrade" resultType="java.util.Map">
+        SELECT grade, COUNT(*) as count 
+        FROM student 
+        GROUP BY grade
+        ORDER BY grade DESC
+    </select>
+
+    <!-- 分页查询学生列表 -->
+    <select id="selectStudentList" resultMap="StudentResultMap">
+        SELECT 
+            student_id,
+            student_number,
+            student_name,
+            grade,
+            major,
+            class_name,
+            college
+        FROM student
+        <where>
+            <if test="studentNumber != null and studentNumber != ''">
+                AND (student_number LIKE CONCAT('%', #{studentNumber}, '%') 
+                     OR student_name LIKE CONCAT('%', #{studentNumber}, '%'))
+            </if>
+            <if test="grade != null and grade != ''">
+                AND grade = #{grade}
+            </if>
+            <if test="className != null and className != ''">
+                AND class_name LIKE CONCAT('%', #{className}, '%')
+            </if>
+        </where>
+        ORDER BY grade ASC, student_id ASC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <!-- 根据ID查询学生 -->
+    <select id="selectStudentById" resultMap="StudentResultMap">
+        SELECT 
+            student_id,
+            student_number,
+            student_name,
+            grade,
+            major,
+            class_name,
+            college
+        FROM student
+        WHERE student_id = #{studentId}
+    </select>
+
+    <!-- 插入学生 -->
+    <insert id="insertStudent" parameterType="com.example.entity.Student"
+            useGeneratedKeys="true" keyProperty="studentId">
+        INSERT INTO student (
+            student_number,
+            student_name,
+            grade,
+            major,
+            class_name,
+            college
+        ) VALUES (
+            #{studentNumber},
+            #{studentName},
+            #{grade},
+            #{major},
+            #{className},
+            #{college}
+        )
+    </insert>
+
+    <!-- 更新学生 -->
+    <update id="updateStudent" parameterType="com.example.entity.Student">
+        UPDATE student
+        SET student_number = #{studentNumber},
+            student_name = #{studentName},
+            grade = #{grade},
+            major = #{major},
+            class_name = #{className},
+            college = #{college}
+        WHERE student_id = #{studentId}
+    </update>
+
+    <!-- 删除学生 -->
+    <delete id="deleteStudent">
+        DELETE FROM student
+        WHERE student_id = #{studentId}
+    </delete>
+
+    <!-- 批量删除学生 -->
+    <delete id="batchDeleteStudents">
+        DELETE FROM student
+        WHERE student_id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 查询所有学生（用于导出） -->
+    <select id="selectAllStudents" resultMap="StudentResultMap">
+        SELECT 
+            student_id,
+            student_number,
+            student_name,
+            grade,
+            major,
+            class_name,
+            college
+        FROM student
+        <where>
+            <if test="studentNumber != null and studentNumber != ''">
+                AND (student_number LIKE CONCAT('%', #{studentNumber}, '%') 
+                     OR student_name LIKE CONCAT('%', #{studentNumber}, '%'))
+            </if>
+            <if test="grade != null and grade != ''">
+                AND grade = #{grade}
+            </if>
+            <if test="className != null and className != ''">
+                AND class_name LIKE CONCAT('%', #{className}, '%')
+            </if>
+        </where>
+        ORDER BY grade ASC, student_id ASC
+    </select>
+
+    <!-- 更新学生密码 -->
+    <update id="updatePassword">
+        UPDATE student
+        SET password = #{password}
+        WHERE student_id = #{studentId}
+    </update>
+
+</mapper>
